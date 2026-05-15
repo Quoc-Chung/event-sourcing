@@ -1,0 +1,33 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: book-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/book_mq?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+    username: root
+    password: Ch@/12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # create / create-drop / validate / none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true   # B?t circuit breaker cho Feign
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}

@@ -1,0 +1,20 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-server
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false   # server kh�ng t? ??ng k�
+    fetch-registry: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+logging:
+  level:
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
