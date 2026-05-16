@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Component;
 public class EmployeeProjection {
 
   private final EmployeeRepository employeeRepository;
-
 
   @EventHandler
   public void on(EmployeeAddedEvent event) {
