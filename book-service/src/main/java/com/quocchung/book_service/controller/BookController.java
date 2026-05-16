@@ -4,9 +4,9 @@ import com.quocchung.book_service.dtos.requests.BookRequest;
 import com.quocchung.book_service.dtos.response.BookResponse;
 import com.quocchung.book_service.service.BookCommandService;
 import com.quocchung.book_service.service.BookQueryService;
+import com.quocchung.common_service.response.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,37 +26,35 @@ public class BookController {
    private final BookCommandService bookCommandService;
    private final BookQueryService bookQueryService;
 
-
    @PostMapping
-   public ResponseEntity<String> addBook(@RequestBody BookRequest bookRequest){
+   public ResponseEntity<ApiResponse<String>> addBook(@RequestBody BookRequest bookRequest){
      String bookId = bookCommandService.createBook(bookRequest);
-     return ResponseEntity.status(HttpStatus.CREATED).body("Tạo thành công sách có id = "+ bookId);
+     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Tạo thành công sách có id = "+ bookId));
    }
 
 
   @PutMapping("/{id}")
-  public ResponseEntity<String> update(@PathVariable String id,
+  public ResponseEntity<ApiResponse<String>> update(@PathVariable String id,
       @RequestBody BookRequest request) {
     bookCommandService.updateBook(id, request);
-    return ResponseEntity.status(HttpStatus.OK).body("Update thành công sách có id = " + id);
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Update thành công sách có id = " + id));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable String id) {
+  public ResponseEntity<ApiResponse<String>> delete(@PathVariable String id) {
     bookCommandService.deleteBook(id);
-    return ResponseEntity.status(HttpStatus.OK).body("Xóa thành công sách có id = "+ id);
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Xóa thành công sách có id = "+ id));
   }
 
 
   @GetMapping("/{id}")
-  public ResponseEntity<BookResponse> getOne(@PathVariable String id) {
-    return ResponseEntity.ok(bookQueryService.getBookById(id));
+  public ResponseEntity<ApiResponse<BookResponse>> getOne(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.success(bookQueryService.getBookById(id)));
   }
 
   @GetMapping
-  public ResponseEntity<List<BookResponse>> getAll() {
-    return ResponseEntity.ok(bookQueryService.getAllBooks());
+  public ResponseEntity<ApiResponse<List<BookResponse>>> getAll() {
+    return ResponseEntity.ok(ApiResponse.success(bookQueryService.getAllBooks()));
   }
-
 
 }

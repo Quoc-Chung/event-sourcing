@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @ComponentScan({
+		"com.quocchung.book_service",
 		"com.quocchung.common_service"
 })
 public class BookServiceApplication {
