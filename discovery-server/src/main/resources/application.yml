@@ -8,7 +8,7 @@ eureka:
   instance:
     hostname: localhost
   client:
-    register-with-eureka: false   # server kh�ng t? ??ng k�
+    register-with-eureka: false
     fetch-registry: false
   server:
     wait-time-in-ms-when-sync-empty: 0

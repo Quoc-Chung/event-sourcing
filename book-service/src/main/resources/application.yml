@@ -12,10 +12,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update   # create / create-drop / validate / none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
   cloud:
     openfeign:
@@ -31,3 +31,8 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    org.hibernate.SQL: OFF
+    org.hibernate.type: OFF

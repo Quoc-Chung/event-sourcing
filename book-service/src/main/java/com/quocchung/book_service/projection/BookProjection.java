@@ -9,6 +9,8 @@ import com.quocchung.book_service.query.FindAllBooksQuery;
 import com.quocchung.book_service.query.FindBookByIdQuery;
 import com.quocchung.book_service.repository.BookRepository;
 import com.quocchung.book_service.utils.Converter;
+import com.quocchung.common_service.exception.NotFoundException;
+import com.quocchung.common_service.utils.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.config.ProcessingGroup;
@@ -23,6 +25,7 @@ public class BookProjection {
 
   private final BookRepository bookRepository;
   private final Converter converter;
+
 
   /**
    * EVENT HANDLE
@@ -42,12 +45,14 @@ public class BookProjection {
   @EventHandler
   public void on(BookUpdatedEvent event) {
     bookRepository.findById(event.getBookId())
+
         .ifPresent(book -> {
           book.setName(event.getName());
           book.setAuthor(event.getAuthor());
           book.setIsReady(event.getIsReady());
           bookRepository.saveAndFlush(book);
-        });
+        })
+        ;
   }
 
   @EventHandler
@@ -55,18 +60,13 @@ public class BookProjection {
     bookRepository.deleteById(event.getBookId());
   }
 
-  /**
-   * QUERY HANDLE
-   * @param query
-   * @return
-   */
-
   @QueryHandler
   public BookResponse handle(FindBookByIdQuery query) {
     Book book = bookRepository.findById(query.getBookId())
-        .orElseThrow(() -> new RuntimeException("Không tìm thấy sách: " + query.getBookId()));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.BOOK_NOT_FOUND,"Không tìm thấy sách với id : " + query.getBookId()));
     return converter.toBookDTO(book);
   }
+
 
   @QueryHandler
   public List<BookResponse> handle(FindAllBooksQuery query) {

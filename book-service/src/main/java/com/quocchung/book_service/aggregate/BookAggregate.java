@@ -6,6 +6,9 @@ import com.quocchung.book_service.command.UpdateBookCommand;
 import com.quocchung.book_service.event.BookCreatedEvent;
 import com.quocchung.book_service.event.BookDeletedEvent;
 import com.quocchung.book_service.event.BookUpdatedEvent;
+import com.quocchung.common_service.exception.ConflictException;
+import com.quocchung.common_service.exception.ValidationException;
+import com.quocchung.common_service.utils.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,10 +38,10 @@ public class BookAggregate {
   @CommandHandler
   public BookAggregate(CreateBookCommand command){
     if (command.getName() == null || command.getName().isBlank())
-      throw new IllegalArgumentException("Tên sách không được trống");
+      throw new ValidationException(ErrorCode.BOOK_NAME_BLANK, "Tên sách không được trống");
 
     if (command.getAuthor() == null || command.getAuthor().isBlank())
-      throw new IllegalArgumentException("Tác giả không được trống");
+      throw new ValidationException(ErrorCode.BOOK_AUTHOR_BLANK, "Tác giả không được trống");
 
     BookCreatedEvent bookCreateEvent = new BookCreatedEvent(
         command.getId(),
@@ -52,15 +55,14 @@ public class BookAggregate {
   public void handle(UpdateBookCommand command) {
     // validate dựa trên state
     if (this.deleted)
-      throw new IllegalStateException("Sách đã bị xóa, không thể cập nhật");
+      throw new ConflictException(ErrorCode.BOOK_ALREADY_DELETED);
 
     if (command.getName() == null || command.getName().isBlank())
-      throw new IllegalArgumentException("Tên sách không được trống");
+      throw new ValidationException(ErrorCode.BOOK_NAME_BLANK, "Tên sách không được trống");
 
     if (command.getAuthor() == null || command.getAuthor().isBlank())
-      throw new IllegalArgumentException("Tác giả không được trống");
+      throw new ValidationException(ErrorCode.BOOK_AUTHOR_BLANK, "Tác giả không được trống");
 
-    // sinh event
     AggregateLifecycle.apply(new BookUpdatedEvent(
         command.getBookId(),
         command.getName(),
@@ -72,7 +74,7 @@ public class BookAggregate {
   public void handle(DeleteBookComand command) {
     // validate dựa trên state
     if (this.deleted)
-      throw new IllegalStateException("Sách đã bị xóa rồi");
+      throw new ConflictException(ErrorCode.BOOK_ALREADY_DELETED ,"Sách đã được xóa đi rồi");
 
     // sinh event
     AggregateLifecycle.apply(new BookDeletedEvent(command.getBookId()));
