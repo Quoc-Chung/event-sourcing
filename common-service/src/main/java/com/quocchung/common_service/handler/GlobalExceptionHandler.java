@@ -41,7 +41,6 @@ public class GlobalExceptionHandler {
       ErrorResponse response = ErrorResponse.of(appEx.getErrorCode(), cause.getMessage());
       return ResponseEntity.status(appEx.getErrorCode().getHttpStatus()).body(response);
     }
-    log.error("Unhandled CommandExecutionException: {}", ex.getMessage(), ex);
     ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
     return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(response);
   }
@@ -54,7 +53,6 @@ public class GlobalExceptionHandler {
       ErrorResponse response = ErrorResponse.of(appEx.getErrorCode(), cause.getMessage());
       return ResponseEntity.status(appEx.getErrorCode().getHttpStatus()).body(response);
     }
-    log.error("Unhandled HandlerExecutionException: {}", ex.getMessage(), ex);
     ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
     return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(response);
   }
